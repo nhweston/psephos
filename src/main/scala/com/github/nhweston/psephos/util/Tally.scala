@@ -2,14 +2,11 @@ package com.github.nhweston.psephos.util
 
 object Tally {
 
-  type Tally[C] = Map[C, Int]
-
-  implicit class TallyImplicits[C](self: Tally[C]) {
-    def increment(candidate: C): Tally[C] =
-      self.updatedWith(candidate)(_.map(_ + 1))
+  implicit class MapImplicits[K, V](self: Map[K, V])(implicit num: Numeric[V]) {
+    def increment(key: K): Map[K, V] = self.updatedWith(key)(_.map(num.plus(_, num.one)))
   }
 
-  def apply[C](candidates: Seq[C]): Tally[C] =
-    candidates.map(_ -> 0).toMap
+  def apply[K, V](keys: Seq[K])(implicit num: Numeric[V]): Map[K, V] =
+    keys.map(_ -> num.zero).toMap
 
 }
